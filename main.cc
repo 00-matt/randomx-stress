@@ -77,24 +77,34 @@ void do_hash(randomx_vm_ptr vm, std::atomic_uint &count) {
 
 int main(int argc, char **argv) {
   auto flags = randomx_get_flags();
-  flags |= RANDOMX_FLAG_LARGE_PAGES;
   flags |= RANDOMX_FLAG_FULL_MEM;
 
-  unsigned hashing_thread_count;
+  unsigned hashing_thread_count = 0;
 
-  if (argc == 1) {
+  for (int i = 1; i < argc; i++) {
+    std::string arg{argv[i]};
+    if (arg == "-h" || arg == "--help") {
+      std::cout << "Usage: " << argv[1] << " [-t <thread count>] [-H]\n";
+      return 0;
+    } else if (arg == "-t" || arg == "--threads") {
+      if (i + 1 < argc) {
+        hashing_thread_count = std::stoi(argv[++i]);
+      } else {
+        std::cerr << "--threads requires one argument\n";
+        return 1;
+      }
+    } else if (arg == "-H" || arg == "--hugepages") {
+      flags |= RANDOMX_FLAG_LARGE_PAGES;
+    } else {
+      std::cerr << "Unknown argument '" << arg << "'\n";
+      return 1;
+    }
+  }
+
+  if (hashing_thread_count == 0) {
     hashing_thread_count = std::thread::hardware_concurrency() / 2;
     std::cerr << "Number of threads not provided. Defaulting to "
               << hashing_thread_count << '\n';
-  } else if (argc == 2) {
-    if (strcmp(argv[1], "-h") || strcmp(argv[1], "--help")) {
-      std::cout << "Usage: " << argv[1] << " [thread count]\n";
-      return 0;
-    }
-    hashing_thread_count = std::stoi(argv[1]);
-  } else {
-    std::cerr << "Usage: " << argv[1] << " [thread count]\n";
-    return 1;
   }
 
   auto dataset = init_dataset(flags, std::thread::hardware_concurrency());
