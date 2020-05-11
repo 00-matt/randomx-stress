@@ -108,7 +108,12 @@ int main(int argc, char **argv) {
               << hashing_thread_count << std::endl;
   }
 
+  auto start = std::chrono::high_resolution_clock::now();
   auto dataset = init_dataset(flags, std::thread::hardware_concurrency());
+  auto now = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> difference = now - start;
+  std::cout << "Dataset initialised in " << difference.count() << 's'
+            << std::endl;
 
   std::vector<std::thread> hashing_threads;
   hashing_threads.reserve(hashing_thread_count);
@@ -124,12 +129,12 @@ int main(int argc, char **argv) {
     hashing_threads.emplace_back(do_hash, std::move(vm), std::ref(count));
   }
 
-  auto start = std::chrono::high_resolution_clock::now();
+  start = std::chrono::high_resolution_clock::now();
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   for (;;) {
-    auto now = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> difference = now - start;
+    now = std::chrono::high_resolution_clock::now();
+    difference = now - start;
 
     unsigned hashes = count;
     start = now;
