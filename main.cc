@@ -84,19 +84,20 @@ int main(int argc, char **argv) {
   for (int i = 1; i < argc; i++) {
     std::string arg{argv[i]};
     if (arg == "-h" || arg == "--help") {
-      std::cout << "Usage: " << argv[1] << " [-t <thread count>] [-H]\n";
+      std::cout << "Usage: " << argv[1] << " [-t <thread count>] [-H]"
+                << std::endl;
       return 0;
     } else if (arg == "-t" || arg == "--threads") {
       if (i + 1 < argc) {
         hashing_thread_count = std::stoi(argv[++i]);
       } else {
-        std::cerr << "--threads requires one argument\n";
+        std::cerr << "--threads requires one argument" << std::endl;
         return 1;
       }
     } else if (arg == "-H" || arg == "--hugepages") {
       flags |= RANDOMX_FLAG_LARGE_PAGES;
     } else {
-      std::cerr << "Unknown argument '" << arg << "'\n";
+      std::cerr << "Unknown argument '" << arg << '\'' << std::endl;
       return 1;
     }
   }
@@ -104,7 +105,7 @@ int main(int argc, char **argv) {
   if (hashing_thread_count == 0) {
     hashing_thread_count = std::thread::hardware_concurrency() / 2;
     std::cerr << "Number of threads not provided. Defaulting to "
-              << hashing_thread_count << '\n';
+              << hashing_thread_count << std::endl;
   }
 
   auto dataset = init_dataset(flags, std::thread::hardware_concurrency());
@@ -134,7 +135,7 @@ int main(int argc, char **argv) {
     start = now;
     count = 0;
 
-    std::cout << hashes / difference.count() << " H/s\n";
+    std::cout << hashes / difference.count() << " H/s" << std::endl;
 
     std::this_thread::sleep_for(std::chrono::seconds(10));
   }
