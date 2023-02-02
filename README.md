@@ -59,7 +59,7 @@ you pass the `-H` option, and that you have enough free memory.
 
 ## Resources
 
-* [integralfx's DDR4 OC Guide](https://github.com/integralfx/MemTestHelper/blob/master/DDR4%20OC%20Guide.md#readme)
+* [integralfx's DDR4 OC Guide](https://github.com/integralfx/MemTestHelper/blob/oc-guide/DDR4%20OC%20Guide.md)
 * [Overclocking Discord](https://discord.gg/pRTpebr)
 
 ## License
